@@ -20,7 +20,7 @@ client.connect(err => {
   // console.log('database connected')
   app.post('/addProduct', (req, res) => {
     const products = req.body;
-    productsCollection.insertMany(products)
+    productsCollection.insertOne(products)
     .then(result=> {
       console.log(result);
       res.send(result.insertedCount)
@@ -38,6 +38,14 @@ client.connect(err => {
     productsCollection.find({key: req.params.key})
     .toArray((err, documents) => {
       res.send(documents[0]);
+    })
+  })
+
+  app.post('/productsByKeys', (req, res) => {
+    const productKeys = req.body;
+    productsCollection.find({key: {$in: productKeys}})
+    .toArray((err, docs) =>{
+      res.send(docs);
     })
   })
 
